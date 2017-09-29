@@ -53,4 +53,64 @@ training_data = train_datagen.flow_from_directory('dataset/training_set', target
 test_data = test_datagen.flow_from_directory('dataset/test_set', target_size=(64,64), batch_size=32, class_mode="binary")
 
 #samples_per_epochs = number of training set size. Step per epoch usually is training size/batch size
-classifier.fit_generator(training_data, steps_per_epoch=(int(8000/32)), epochs=20, validation_data=test_data, validation_steps=2000, use_multiprocessing=True)
+classifier.fit_generator(training_data, steps_per_epoch=(int(8000/32)), epochs=25, validation_data=test_data, validation_steps=2000, use_multiprocessing=True)
+
+#prediction
+import numpy as np
+from keras.preprocessing import image #to process image
+
+picture1 = image.load_img("dataset/single_prediction/cat_or_dog_1.jpg", target_size=(64,64)) #same target size as the training set # of pixels
+
+#turn image into 3d array, 64x64x3
+picture1 = image.img_to_array(picture1)
+picture1 = np.expand_dims(picture1,axis=0) #picture in first dimension/axis
+#classifier.predict(picture1) #asking for 4 dimensions, error
+result = classifier.predict(picture1) #only accept input in a batch with the ann/cnn, hence the expand_dims 
+
+if result:
+    print("dog")
+
+else:
+    print("cat")
+
+
+picture2 = image.load_img("dataset/single_prediction/cat_or_dog_2.jpg", target_size = (64,64))
+picture2 = image.img_to_array(picture2)
+picture2 = np.expand_dims(picture2, axis=0)
+
+result2 = classifier.predict(picture2)
+if result2:
+    print ('dog')
+else:
+    print("cat")
+
+################################################################
+#helper function to organize code later on
+
+def result_output(result):
+    if result:
+        print("dog")
+        return
+    print("cat")
+    return
+
+def img_import(img): #img is the path
+    picture = image.load_img(img, target_size=(64,64))
+    picture = np.expand_dims(picture, axis=0)
+    return picture
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
